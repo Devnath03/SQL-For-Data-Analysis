@@ -740,3 +740,5 @@ CREATE TABLE Project (
     FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
 );
 
+# Coammand Sheet 
+![alt text](image.png)
