@@ -1,111 +1,98 @@
-# SQL-For-Data-Analysis
+# SQL For Data Analysis
 
-Basis For SQL
-SQL (Structured Query Language) is a standard programming language used to communicate with databases. It allows you to store, retrieve, update, and manage data efficiently.
+A concise, well-formatted reference for common SQL concepts, commands, and examples.
 
-📘 SQL Commands Explanation
-1️⃣ DDL (Data Definition Language) – Structure of Database
-Command	Description	Syntax Example
-CREATE	Used to create a new database or table.	sql CREATE TABLE Students (ID INT PRIMARY KEY, Name VARCHAR(50), Age INT);
-DROP	Deletes a table or database permanently.	sql DROP TABLE Students;
-ALTER	Modifies an existing table (add, delete, or modify columns).	sql ALTER TABLE Students ADD Grade CHAR(1);
-TRUNCATE	Removes all rows from a table but keeps its structure.	sql TRUNCATE TABLE Students;
-2️⃣ DML (Data Manipulation Language) – Manage Data
-Command	Description	Syntax Example
-INSERT	Adds new data into a table.	sql INSERT INTO Students (ID, Name, Age) VALUES (1, 'Alice', 20);
-UPDATE	Modifies existing data in a table.	sql UPDATE Students SET Age = 21 WHERE Name = 'Alice';
-DELETE	Removes specific records from a table.	sql DELETE FROM Students WHERE ID = 1;
-3️⃣ TCL (Transaction Control Language) – Manage Transactions
-Command	Description	Syntax Example
-COMMIT	Saves all changes made during the transaction.	sql COMMIT;
-SAVEPOINT	Creates a savepoint within a transaction.	sql SAVEPOINT sp1;
-ROLLBACK	Undo changes up to the last SAVEPOINT or entire transaction.	sql ROLLBACK TO sp1;
-4️⃣ DQL (Data Query Language) – Query Data
-Command	Description	Syntax Example
-SELECT	Retrieves data from a table.	sql SELECT Name, Age FROM Students WHERE Age > 18;
-5️⃣ DCL (Data Control Language) – Control Access
-Command	Description	Syntax Example
-GRANT	Gives user access privileges.	sql GRANT SELECT, INSERT ON Students TO user1;
-REVOKE	Removes user access privileges.	sql REVOKE INSERT ON Students FROM user1;
+---
 
-📘 CREATE DATABASE & CREATE TABLE in SQL
-1️⃣ CREATE DATABASE
+## Table of Contents
+- Overview
+- SQL Command Categories
+- CREATE DATABASE & CREATE TABLE
+- INSERT INTO examples
+- ALTER TABLE examples
+- SELECT / CRUD examples
+- Quick Reference Cheat Sheet
+- ER Diagram (script)
 
-Purpose: Used to create a new database.
+---
 
-Notes: Database name should be unique.
+## Overview
+SQL (Structured Query Language) is the standard language for working with relational databases. Use it to create structures (DDL), manipulate data (DML), query data (DQL), control transactions (TCL), and manage permissions (DCL).
 
-Syntax:
+---
 
-CREATE DATABASE database_name;
+## SQL Command Categories
+| Category | Description |
+|---:|---|
+| DDL (Data Definition Language) | Create/modify/delete database objects (CREATE, DROP, ALTER, TRUNCATE) |
+| DML (Data Manipulation Language) | Insert/update/delete data (INSERT, UPDATE, DELETE) |
+| DQL (Data Query Language) | Query data (SELECT) |
+| TCL (Transaction Control Language) | Transaction control (COMMIT, ROLLBACK, SAVEPOINT) |
+| DCL (Data Control Language) | Permission control (GRANT, REVOKE) |
 
+---
 
-Example:
+## Common Commands (Examples)
 
+### DDL
+```sql
+-- Create a database
 CREATE DATABASE SchoolDB;
 
-
-👉 This will create a new database named SchoolDB.
-
-2️⃣ CREATE TABLE
-
-Purpose: Used to create a new table inside a database.
-
-Notes:
-
-Each column must have a name and data type.
-
-One or more columns can be defined as PRIMARY KEY.
-
-Constraints like NOT NULL, UNIQUE, DEFAULT, CHECK, etc., can be added.
-
-Syntax:
-
-CREATE TABLE table_name (
-    column1 datatype constraint,
-    column2 datatype constraint,
-    ...
-);
-
-🔹 Example 1: Creating a Simple Table
+-- Create a table
 CREATE TABLE Students (
     StudentID INT PRIMARY KEY,
     Name VARCHAR(100) NOT NULL,
     Age INT,
     Grade CHAR(1)
 );
+```
 
+### DML
+```sql
+-- Insert rows
+INSERT INTO Students (StudentID, Name, Age, Grade)
+VALUES (1, 'Alice', 20, 'A');
 
-👉 This creates a Students table with 4 columns:
+-- Update rows
+UPDATE Students SET Age = 21 WHERE StudentID = 1;
 
-StudentID → Integer, Primary Key (unique ID).
+-- Delete rows
+DELETE FROM Students WHERE StudentID = 1;
+```
 
-Name → String, cannot be NULL.
+### TCL
+```sql
+BEGIN;
+-- some DML...
+SAVEPOINT sp1;
+-- more DML...
+ROLLBACK TO sp1;
+COMMIT;
+```
 
-Age → Integer.
+### DCL
+```sql
+GRANT SELECT, INSERT ON Students TO user1;
+REVOKE INSERT ON Students FROM user1;
+```
 
-Grade → Single character (e.g., 'A', 'B').
+---
 
-🔹 Example 2: Table with Constraints
+## CREATE TABLE — Examples
+
+Simple table:
+```sql
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY,
     CourseName VARCHAR(50) NOT NULL UNIQUE,
     Credits INT CHECK (Credits > 0),
     Department VARCHAR(30) DEFAULT 'General'
 );
+```
 
-
-👉 Features:
-
-CourseID → Primary Key.
-
-CourseName → Must be unique and not NULL.
-
-Credits → Must be greater than 0 (CHECK).
-
-Department → If not provided, defaults to 'General'.
-
-🔹 Example 3: Table with Foreign Key
+Table with foreign keys:
+```sql
 CREATE TABLE Enrollments (
     EnrollmentID INT PRIMARY KEY,
     StudentID INT,
@@ -114,59 +101,146 @@ CREATE TABLE Enrollments (
     FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 );
+```
 
+---
 
-👉 This creates a relationship:
+## INSERT INTO — Examples
 
-StudentID in Enrollments links to Students table.
+Insert into all columns:
+```sql
+INSERT INTO Students VALUES (1, 'Alice', 20, 'A');
+```
 
-CourseID in Enrollments links to Courses table.
+Insert into specific columns:
+```sql
+INSERT INTO Students (StudentID, Name) VALUES (2, 'Bob');
+```
 
-⚡ Together:
+Insert multiple rows:
+```sql
+INSERT INTO Students (StudentID, Name, Age, Grade) VALUES
+  (3, 'Charlie', 22, 'B'),
+  (4, 'Diana', 21, 'A');
+```
 
--- Create Database
-CREATE DATABASE SchoolDB;
+Insert from another table:
+```sql
+INSERT INTO Alumni (StudentID, Name)
+SELECT StudentID, Name FROM Students WHERE Grade = 'A';
+```
 
--- Select Database (MySQL / SQL Server style)
-USE SchoolDB;
+---
 
--- Create Tables
-CREATE TABLE Students (...);
-CREATE TABLE Courses (...);
-CREATE TABLE Enrollments (...);
+## ALTER TABLE — Examples
+```sql
+-- Add a column
+ALTER TABLE Students ADD Email VARCHAR(100);
 
-# Diagram (ER model) for this SchoolDB so you can visualize the relationships
+-- Modify column (MySQL)
+ALTER TABLE Students MODIFY Age BIGINT;
+
+-- Drop column
+ALTER TABLE Students DROP COLUMN Grade;
+
+-- Rename column (dialect may vary)
+ALTER TABLE Students RENAME COLUMN Name TO FullName;
+
+-- Rename table (dialect may vary)
+ALTER TABLE Students RENAME TO Learners;
+```
+
+---
+
+## SELECT / CRUD Examples
+
+Sample Employee table:
+```sql
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Department VARCHAR(50),
+    Age INT,
+    PhoneNo VARCHAR(10)
+);
+```
+
+Basic SELECT:
+```sql
+SELECT FirstName, LastName FROM Employee;
+SELECT * FROM Employee;
+```
+
+WHERE / ORDER BY / DISTINCT / GROUP BY / HAVING / JOIN:
+```sql
+SELECT FirstName, Age FROM Employee WHERE Age = 25;
+SELECT FirstName, Age FROM Employee ORDER BY Age DESC;
+SELECT DISTINCT Department FROM Employee;
+SELECT Department, COUNT(*) AS EmployeeCount FROM Employee GROUP BY Department;
+SELECT Department, COUNT(*) FROM Employee GROUP BY Department HAVING COUNT(*) >= 2;
+SELECT e.FirstName, p.Budget
+FROM Employee e
+JOIN Project p ON e.EmpID = p.EmpID;
+```
+
+UPDATE / DELETE:
+```sql
+UPDATE Staff SET PhoneNo = '9999999999' WHERE FirstName = 'Amelia';
+DELETE FROM Staff WHERE Department = 'Marketing';
+```
+
+DROP / TRUNCATE:
+```sql
+DROP TABLE Staff;
+TRUNCATE TABLE Staff;
+```
+
+---
+
+## Quick Reference Cheat Sheet
+
+| Statement | Purpose |
+|---|---|
+| SELECT | Retrieve rows |
+| INSERT | Add rows |
+| UPDATE | Modify rows |
+| DELETE | Remove rows |
+| CREATE TABLE | Define a table |
+| ALTER TABLE | Change table structure |
+| DROP TABLE | Remove table |
+| TRUNCATE TABLE | Remove all rows (faster) |
+| JOIN | Combine tables on keys |
+| GROUP BY / HAVING | Aggregate and filter groups |
+| ORDER BY | Sort results |
+
+---
+
+## ER Diagram Script (Python)
+Use this script to generate a simple ER visualization (requires networkx & matplotlib).
+```python
+# python
 import matplotlib.pyplot as plt
 import networkx as nx
 
-# Define tables and relationships
 tables = {
     "Students": ["StudentID (PK)", "Name", "Age", "Grade"],
     "Courses": ["CourseID (PK)", "CourseName", "Credits", "Department"],
     "Enrollments": ["EnrollmentID (PK)", "StudentID (FK)", "CourseID (FK)", "EnrollmentDate"]
 }
 
-# Define relationships (edges)
 relationships = [
     ("Enrollments", "Students"),
     ("Enrollments", "Courses")
 ]
 
-# Create graph
 G = nx.DiGraph()
-
-# Add nodes with attributes
 for table, columns in tables.items():
     label = f"{table}\n" + "\n".join(columns)
     G.add_node(table, label=label)
-
-# Add edges
 G.add_edges_from(relationships)
 
-# Layout
 pos = nx.spring_layout(G, seed=42)
-
-# Draw nodes with labels
 plt.figure(figsize=(10,6))
 nx.draw_networkx_nodes(G, pos, node_size=3500, node_color="lightblue", edgecolors="black")
 nx.draw_networkx_edges(G, pos, arrowstyle="->", arrowsize=20)
@@ -176,85 +250,11 @@ nx.draw_networkx_labels(G, pos, labels, font_size=9, font_family="monospace")
 plt.title("ER Diagram: SchoolDB", fontsize=14)
 plt.axis("off")
 plt.show()
+```
 
-📘 SQL INSERT INTO Statement
+---
 
-The INSERT INTO statement is used to add new rows of data into a table.
-
-1️⃣ Inserting Data into All Columns
-✅ Syntax:
-INSERT INTO table_name
-VALUES (value1, value2, value3, ...);
-
-🔹 Parameters:
-
-table_name → The target table where data is inserted.
-
-VALUES → List of values to insert (must match the order of table columns).
-
-🔹 Example:
--- Table
-CREATE TABLE Students (
-    StudentID INT PRIMARY KEY,
-    Name VARCHAR(50),
-    Age INT,
-    Grade CHAR(1)
-);
-
--- Insert into all columns
-INSERT INTO Students
-VALUES (1, 'Alice', 20, 'A');
-
-🔹 Output (Students table):
-StudentID	Name	Age	Grade
-1	Alice	20	A
-2️⃣ Inserting Data into Specific Columns
-✅ Syntax:
-INSERT INTO table_name (column1, column2, ...)
-VALUES (value1, value2, ...);
-
-🔹 Parameters:
-
-column1, column2... → Only the listed columns get values.
-
-Other columns will use default values or NULL if allowed.
-
-🔹 Example:
-INSERT INTO Students (StudentID, Name)
-VALUES (2, 'Bob');
-
-🔹 Output (Students table):
-StudentID	Name	Age	Grade
-1	Alice	20	A
-2	Bob	NULL	NULL
-3️⃣ Inserting Multiple Rows at Once
-✅ Syntax:
-INSERT INTO table_name (column1, column2, ...)
-VALUES 
-    (value1a, value2a, ...),
-    (value1b, value2b, ...),
-    (value1c, value2c, ...);
-
-🔹 Parameters:
-
-Multiple sets of values can be inserted in a single statement.
-
-🔹 Example:
-INSERT INTO Students (StudentID, Name, Age, Grade)
-VALUES 
-    (3, 'Charlie', 22, 'B'),
-    (4, 'Diana', 21, 'A');
-
-🔹 Output (Students table):
-StudentID	Name	Age	Grade
-1	Alice	20	A
-2	Bob	NULL	NULL
-3	Charlie	22	B
-4	Diana	21	A
-4️⃣ Inserting Data from One Table into Another
-✅ Syntax:
-INSERT INTO target_table (column1, column2, ...)
-SELECT column1, column2, ...
+If you want emojis, tags, or a different tone (e.g., more examples per topic), specify which sections to expand.
 FROM source_table
 WHERE condition;
 
