@@ -281,3 +281,111 @@ WHERE Grade = 'A';
 StudentID	Name
 1	Alice
 4	Diana
+
+
+📘 SQL ALTER TABLE Statement
+
+The ALTER TABLE statement is used to change the structure of an existing table without deleting it.
+Common operations include adding, modifying, deleting, or renaming columns, and even renaming the table itself.
+
+1️⃣ ALTER TABLE ... ADD (Add New Column)
+✅ Syntax:
+ALTER TABLE table_name
+ADD column_name datatype constraint;
+
+🔹 Example:
+-- Add Email column to Students table
+ALTER TABLE Students
+ADD Email VARCHAR(100);
+
+🔹 Output (Students table structure):
+Column	Type
+StudentID	INT (PK)
+Name	VARCHAR
+Age	INT
+Grade	CHAR(1)
+Email	VARCHAR(100)
+2️⃣ ALTER TABLE ... MODIFY (Modify Column Type/Size)
+
+⚠️ In some databases (like MySQL), the keyword is MODIFY.
+In SQL Server/Oracle, ALTER COLUMN is used instead.
+
+✅ Syntax:
+-- MySQL
+ALTER TABLE table_name
+MODIFY column_name new_datatype;
+
+-- SQL Server/Oracle
+ALTER TABLE table_name
+ALTER COLUMN column_name new_datatype;
+
+🔹 Example:
+-- Change Age column to BIGINT
+ALTER TABLE Students
+MODIFY Age BIGINT;
+
+🔹 Output:
+
+Column Age is now BIGINT instead of INT.
+
+3️⃣ ALTER TABLE ... DROP COLUMN (Delete a Column)
+✅ Syntax:
+ALTER TABLE table_name
+DROP COLUMN column_name;
+
+🔹 Example:
+-- Remove Grade column
+ALTER TABLE Students
+DROP COLUMN Grade;
+
+🔹 Output (Students table structure after drop):
+Column	Type
+StudentID	INT (PK)
+Name	VARCHAR
+Age	BIGINT
+Email	VARCHAR(100)
+4️⃣ ALTER TABLE ... RENAME COLUMN (Rename a Column)
+✅ Syntax:
+ALTER TABLE table_name
+RENAME COLUMN old_column_name TO new_column_name;
+
+🔹 Example:
+-- Rename "Name" column to "FullName"
+ALTER TABLE Students
+RENAME COLUMN Name TO FullName;
+
+🔹 Output (Students table structure):
+Column	Type
+StudentID	INT (PK)
+FullName	VARCHAR
+Age	BIGINT
+Email	VARCHAR(100)
+5️⃣ ALTER TABLE ... RENAME TO (Rename the Table)
+✅ Syntax:
+ALTER TABLE old_table_name
+RENAME TO new_table_name;
+
+🔹 Example:
+-- Rename Students table to Learners
+ALTER TABLE Students
+RENAME TO Learners;
+
+🔹 Output:
+
+The table Students is now called Learners.
+
+🔎 Example Queries (All Together)
+-- 1. Add a column
+ALTER TABLE Students ADD Email VARCHAR(100);
+
+-- 2. Modify column data type
+ALTER TABLE Students MODIFY Age BIGINT;
+
+-- 3. Drop a column
+ALTER TABLE Students DROP COLUMN Grade;
+
+-- 4. Rename a column
+ALTER TABLE Students RENAME COLUMN Name TO FullName;
+
+-- 5. Rename the table
+ALTER TABLE Students RENAME TO Learners;
