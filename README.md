@@ -389,3 +389,354 @@ ALTER TABLE Students RENAME COLUMN Name TO FullName;
 
 -- 5. Rename the table
 ALTER TABLE Students RENAME TO Learners;
+
+
+# SQL SELECT Statement
+
+The SELECT statement is used to retrieve data from one or more tables. It can target specific columns or all columns, and supports filtering, sorting, grouping, joins, and aggregations.
+
+Syntax
+SELECT field1, field2, ...
+FROM entity_name;
+
+
+Parameters:
+
+field1, field2: Columns you want to retrieve. Use * to select all columns.
+
+entity_name: Table or view you are querying.
+
+Sample Table and Data
+
+We'll create a table Employee with some sample data:
+
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Department VARCHAR(50),
+    Age INT,
+    ContactNo VARCHAR(10)
+);
+
+INSERT INTO Employee (EmpID, FirstName, LastName, Department, Age, ContactNo)
+VALUES 
+    (101, 'Ethan', 'Brown', 'Finance', 28, '9876543210'),
+    (102, 'Olivia', 'Wilson', 'HR', 25, '9876543211'),
+    (103, 'Hiro', 'Yamamoto', 'IT', 30, '9876543212'),
+    (104, 'Miguel', 'Garcia', 'Finance', 25, '9876543213'),
+    (105, 'Sofia', 'Bianchi', 'Marketing', 27, '9876543214');
+
+1️⃣ Select Specific Columns
+
+Retrieve only FirstName and LastName:
+
+SELECT FirstName, LastName
+FROM Employee;
+
+
+Output:
+
+FirstName	LastName
+Ethan	Brown
+Olivia	Wilson
+Hiro	Yamamoto
+Miguel	Garcia
+Sofia	Bianchi
+2️⃣ Select All Columns
+
+Fetch all columns:
+
+SELECT *
+FROM Employee;
+
+
+Output:
+
+EmpID	FirstName	LastName	Department	Age	ContactNo
+101	Ethan	Brown	Finance	28	9876543210
+102	Olivia	Wilson	HR	25	9876543211
+103	Hiro	Yamamoto	IT	30	9876543212
+104	Miguel	Garcia	Finance	25	9876543213
+105	Sofia	Bianchi	Marketing	27	9876543214
+3️⃣ SELECT with WHERE Clause
+
+Filter employees aged 25:
+
+SELECT FirstName, Age
+FROM Employee
+WHERE Age = 25;
+
+
+Output:
+
+FirstName	Age
+Olivia	25
+Miguel	25
+4️⃣ SELECT with ORDER BY Clause
+
+Sort by Age descending:
+
+SELECT FirstName, Age
+FROM Employee
+ORDER BY Age DESC;
+
+
+Output:
+
+FirstName	Age
+Hiro	30
+Ethan	28
+Sofia	27
+Olivia	25
+Miguel	25
+5️⃣ SELECT with DISTINCT Clause
+
+Get unique departments:
+
+SELECT DISTINCT Department
+FROM Employee;
+
+
+Output:
+
+Department
+Finance
+HR
+IT
+Marketing
+6️⃣ SELECT with GROUP BY Clause
+
+Count employees in each department:
+
+SELECT Department, COUNT(*) AS EmployeeCount
+FROM Employee
+GROUP BY Department;
+
+
+Output:
+
+Department	EmployeeCount
+Finance	2
+HR	1
+IT	1
+Marketing	1
+7️⃣ SELECT with HAVING Clause
+
+Departments with 2 or more employees:
+
+SELECT Department, COUNT(*) AS EmployeeCount
+FROM Employee
+GROUP BY Department
+HAVING COUNT(*) >= 2;
+
+
+Output:
+
+Department	EmployeeCount
+Finance	2
+8️⃣ SELECT with JOIN Clause
+
+Create another table Project:
+
+CREATE TABLE Project (
+    ProjectID INT PRIMARY KEY,
+    EmpID INT,
+    Budget DECIMAL(10,2),
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+);
+
+INSERT INTO Project (ProjectID, EmpID, Budget)
+VALUES
+(201, 101, 50000.00),
+(202, 102, 30000.00),
+(203, 103, 70000.00);
+
+
+Join Employee and Project to get employee names and project budgets:
+
+SELECT Employee.FirstName, Project.Budget
+FROM Employee
+JOIN Project
+ON Employee.EmpID = Project.EmpID;
+
+
+Output:
+
+FirstName	Budget
+Ethan	50000.00
+Olivia	30000.00
+Hiro	70000.00
+
+
+1️⃣ WHERE Clause
+
+The WHERE clause filters rows that satisfy a condition.
+
+Syntax:
+
+SELECT column1, column2
+FROM table_name
+WHERE condition;
+
+
+Example: Get all staff in the Sales department:
+
+SELECT FirstName, Department
+FROM Staff
+WHERE Department = 'Sales';
+
+
+Output:
+
+FirstName	Department
+Lucas	Sales
+Diego	Sales
+2️⃣ UPDATE Statement
+
+The UPDATE statement modifies existing data.
+
+Syntax:
+
+UPDATE table_name
+SET column1 = value1, column2 = value2
+WHERE condition;
+
+
+Example: Update the PhoneNo of Amelia:
+
+UPDATE Staff
+SET PhoneNo = '9999999999'
+WHERE FirstName = 'Amelia';
+
+
+After Update:
+
+StaffID	FirstName	PhoneNo
+305	Amelia	9999999999
+3️⃣ DELETE Statement
+
+The DELETE statement removes rows from a table.
+
+Syntax:
+
+DELETE FROM table_name
+WHERE condition;
+
+
+Example: Delete staff in the Marketing department:
+
+DELETE FROM Staff
+WHERE Department = 'Marketing';
+
+
+Remaining Staff:
+
+StaffID	FirstName	Department
+301	Lucas	Sales
+303	Riku	IT
+304	Diego	Sales
+305	Amelia	Finance
+
+⚠️ Important: Without WHERE, all rows in the table will be deleted.
+
+4️⃣ ORDER BY Clause
+
+The ORDER BY clause sorts query results in ascending (ASC) or descending (DESC) order.
+
+Syntax:
+
+SELECT column1, column2
+FROM table_name
+ORDER BY column1 ASC|DESC;
+
+
+Example: Sort staff by Age descending:
+
+SELECT FirstName, Age
+FROM Staff
+ORDER BY Age DESC;
+
+
+Output:
+
+FirstName	Age
+Riku	31
+Lucas	29
+Amelia	28
+Emma	27
+Diego	27
+5️⃣ DROP Table
+
+The DROP statement removes a table completely, including its data and structure.
+
+Syntax:
+
+DROP TABLE table_name;
+
+
+Example: Drop the Staff table:
+
+DROP TABLE Staff;
+
+
+After this, the Staff table no longer exists.
+
+6️⃣ TRUNCATE Table
+
+The TRUNCATE statement removes all rows from a table but keeps the table structure intact.
+
+Syntax:
+
+TRUNCATE TABLE table_name;
+
+
+Example: Remove all staff data but keep the table:
+
+TRUNCATE TABLE Staff;
+
+
+Effect: Table Staff remains, but it has 0 rows.
+
+✅ Quick Reference Table
+Statement	Purpose	Key Notes
+WHERE	Filter rows	Used with SELECT, UPDATE, DELETE
+UPDATE	Modify existing rows	Always use WHERE to avoid updating all rows
+DELETE	Remove rows	Always use WHERE to avoid deleting all rows
+ORDER BY	Sort results	Use ASC or DESC
+DROP	Remove table completely	Cannot be undone
+TRUNCATE	Remove all data	Keeps table structure, faster than DELETE
+
+SQL CRUD + Table Management Cheat Sheet
+SQL Statement	Syntax	Example	Description	Output / Effect
+SELECT	SELECT column1, column2 FROM table_name;	SELECT FirstName, LastName FROM Employee;	Retrieves specific columns	List of employees’ first and last names
+SELECT ALL	SELECT * FROM table_name;	SELECT * FROM Employee;	Retrieves all columns	Full table data
+WHERE	SELECT column FROM table_name WHERE condition;	SELECT FirstName FROM Employee WHERE Department='IT';	Filters rows based on a condition	Employees in IT department
+ORDER BY	`SELECT column FROM table_name ORDER BY column ASC	DESC;`	SELECT FirstName, Age FROM Employee ORDER BY Age DESC;	Sorts query results
+DISTINCT	SELECT DISTINCT column FROM table_name;	SELECT DISTINCT Department FROM Employee;	Returns unique values	List of unique departments
+GROUP BY	SELECT column, COUNT(*) FROM table_name GROUP BY column;	SELECT Department, COUNT(*) AS DeptCount FROM Employee GROUP BY Department;	Aggregates rows	Number of employees per department
+HAVING	SELECT column, COUNT(*) FROM table_name GROUP BY column HAVING COUNT(*) >= 2;	SELECT Department, COUNT(*) AS DeptCount FROM Employee GROUP BY Department HAVING COUNT(*) >= 2;	Filters grouped results	Departments with 2+ employees
+JOIN	SELECT a.column1, b.column2 FROM table1 a JOIN table2 b ON a.key=b.key;	SELECT Employee.FirstName, Project.Budget FROM Employee JOIN Project ON Employee.EmpID = Project.EmpID;	Combines tables	Employee names with project budgets
+UPDATE	UPDATE table_name SET column=value WHERE condition;	UPDATE Staff SET PhoneNo='9999999999' WHERE FirstName='Amelia';	Modifies existing rows	Updates specific staff’s phone number
+DELETE	DELETE FROM table_name WHERE condition;	DELETE FROM Staff WHERE Department='Marketing';	Removes rows	Deletes specific rows
+TRUNCATE	TRUNCATE TABLE table_name;	TRUNCATE TABLE Staff;	Removes all rows, keeps structure	Table becomes empty
+DROP	DROP TABLE table_name;	DROP TABLE Staff;	Removes table completely	Table structure and data deleted
+Sample Tables Used in Examples
+Employee Table
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Department VARCHAR(50),
+    Age INT,
+    PhoneNo VARCHAR(10)
+);
+
+Project Table
+CREATE TABLE Project (
+    ProjectID INT PRIMARY KEY,
+    EmpID INT,
+    Budget DECIMAL(10,2),
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+);
+
