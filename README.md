@@ -259,3 +259,158 @@ plt.show()
 ![Command sheet image](image.png)
 
 ---
+
+## Extended Reference
+
+### Detailed: ALTER TABLE
+Notes: Some dialects differ — MySQL uses MODIFY, SQL Server/Oracle use ALTER COLUMN.
+
+```sql
+-- Add a column
+ALTER TABLE Students ADD Email VARCHAR(100);
+
+-- MySQL: change datatype
+ALTER TABLE Students MODIFY Age BIGINT;
+
+-- SQL Server / Oracle: change datatype
+ALTER TABLE Students ALTER COLUMN Age BIGINT;
+
+-- Drop a column
+ALTER TABLE Students DROP COLUMN Grade;
+
+-- Rename a column (dialect-specific)
+-- PostgreSQL:
+ALTER TABLE Students RENAME COLUMN Name TO FullName;
+
+-- Rename table (dialect-specific)
+ALTER TABLE Students RENAME TO Learners;
+```
+
+Quick summary:
+| Operation | MySQL | SQL Server / Oracle | PostgreSQL |
+|---|---:|---:|---:|
+| Modify column type | ALTER TABLE ... MODIFY | ALTER TABLE ... ALTER COLUMN | ALTER TABLE ... ALTER COLUMN |
+| Rename column | ALTER TABLE ... CHANGE (older) / RENAME COLUMN | sp_rename or ALTER TABLE ... ALTER COLUMN (varies) | ALTER TABLE ... RENAME COLUMN |
+| Rename table | RENAME TABLE / ALTER TABLE ... RENAME | sp_rename | ALTER TABLE ... RENAME TO |
+
+---
+
+### SQL SELECT — Full examples with sample data
+
+Create sample Employee and Project tables and insert data:
+```sql
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Department VARCHAR(50),
+    Age INT,
+    ContactNo VARCHAR(10)
+);
+
+INSERT INTO Employee (EmpID, FirstName, LastName, Department, Age, ContactNo) VALUES
+(101, 'Ethan', 'Brown',  'Finance',   28, '9876543210'),
+(102, 'Olivia','Wilson', 'HR',        25, '9876543211'),
+(103, 'Hiro',  'Yamamoto','IT',       30, '9876543212'),
+(104, 'Miguel','Garcia', 'Finance',   25, '9876543213'),
+(105, 'Sofia', 'Bianchi', 'Marketing', 27, '9876543214');
+
+CREATE TABLE Project (
+    ProjectID INT PRIMARY KEY,
+    EmpID INT,
+    Budget DECIMAL(10,2),
+    FOREIGN KEY (EmpID) REFERENCES Employee(EmpID)
+);
+
+INSERT INTO Project (ProjectID, EmpID, Budget) VALUES
+(201, 101, 50000.00),
+(202, 102, 30000.00),
+(203, 103, 70000.00);
+```
+
+Select examples:
+```sql
+-- Specific columns
+SELECT FirstName, LastName FROM Employee;
+
+-- All columns
+SELECT * FROM Employee;
+
+-- Filter
+SELECT FirstName, Age FROM Employee WHERE Age = 25;
+
+-- Order by
+SELECT FirstName, Age FROM Employee ORDER BY Age DESC;
+
+-- Distinct
+SELECT DISTINCT Department FROM Employee;
+
+-- Group / Having
+SELECT Department, COUNT(*) AS EmployeeCount FROM Employee GROUP BY Department;
+SELECT Department, COUNT(*) AS EmployeeCount FROM Employee GROUP BY Department HAVING COUNT(*) >= 2;
+
+-- Join
+SELECT e.FirstName, p.Budget
+FROM Employee e
+JOIN Project p ON e.EmpID = p.EmpID;
+```
+
+Expected sample outputs (rendered as simple Markdown tables):
+
+Employees (selected columns)
+| EmpID | FirstName | LastName | Department | Age | ContactNo |
+|---:|---|---|---|---:|---|
+| 101 | Ethan  | Brown   | Finance   | 28 | 9876543210 |
+| 102 | Olivia | Wilson  | HR        | 25 | 9876543211 |
+| 103 | Hiro   | Yamamoto| IT        | 30 | 9876543212 |
+| 104 | Miguel | Garcia  | Finance   | 25 | 9876543213 |
+| 105 | Sofia  | Bianchi | Marketing | 27 | 9876543214 |
+
+Employees aged 25
+| FirstName | Age |
+|---|---:|
+| Olivia | 25 |
+| Miguel | 25 |
+
+Employee — Project join
+| FirstName | Budget |
+|---|---:|
+| Ethan  | 50000.00 |
+| Olivia | 30000.00 |
+| Hiro   | 70000.00 |
+
+---
+
+### WHERE / ORDER BY / GROUP BY / HAVING / JOIN — quick notes
+- WHERE filters rows before grouping.
+- GROUP BY groups rows; use aggregate functions (COUNT, SUM, AVG).
+- HAVING filters groups (use after GROUP BY).
+- ORDER BY sorts final result (ASC default, use DESC for reverse).
+- JOIN types: INNER JOIN (matching rows), LEFT/RIGHT JOIN (preserve one side), FULL OUTER JOIN (both sides).
+
+---
+
+### CRUD & Table Management Cheat Sheet (cleaned)
+| Statement | Purpose | Notes |
+|---|---|---|
+| SELECT | Retrieve rows | Use WHERE to filter |
+| INSERT | Add rows | Specify columns to avoid ordering issues |
+| UPDATE | Modify rows | Always include WHERE to avoid full-table updates |
+| DELETE | Remove rows | Always include WHERE to avoid full-table deletes |
+| CREATE TABLE | Define a table | Define primary/foreign keys, constraints |
+| ALTER TABLE | Change table structure | Dialect differences for MODIFY/ALTER COLUMN |
+| DROP TABLE | Remove table and data | Irrecoverable without backup |
+| TRUNCATE TABLE | Remove all rows fast | Resets storage; cannot be rolled back in some DBs |
+| JOIN | Combine tables | Use ON to define join condition |
+| GROUP BY / HAVING | Aggregate and filter groups | HAVING filters aggregated results |
+| ORDER BY | Sort results | Use ASC or DESC |
+
+---
+
+### Common pitfalls & tips
+- Always test ALTER and DROP in a staging DB before production.
+- Use transactions (BEGIN/COMMIT/ROLLBACK) for grouped DML operations.
+- Prefer explicit column lists in INSERT statements.
+- Use indexes on frequently joined/filtered columns for performance.
+
+---
