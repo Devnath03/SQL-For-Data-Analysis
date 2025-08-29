@@ -260,8 +260,6 @@ plt.show()
 
 ---
 
-## Extended Reference
-
 ### Detailed: ALTER TABLE
 Notes: Some dialects differ — MySQL uses MODIFY, SQL Server/Oracle use ALTER COLUMN.
 
