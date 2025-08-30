@@ -416,8 +416,6 @@ Employee — Project join
 ## Contributing
 Contributions are welcome! Please open issues or submit pull requests for improvements.
 
-
-
 ## Contact
 For questions or collaboration, contact [Devnath03](https://github.com/Devnath03).
 
